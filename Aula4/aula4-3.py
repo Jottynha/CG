@@ -5,15 +5,11 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import math
 
-
 def desenhar_engrenagem(tela, centro, raio=15, dentes=10,
                         cor=(180, 180, 180), espessura=2):
-    """Desenha uma engrenagem simples sobre uma junta."""
     cx, cy = centro
-
     # Corpo da engrenagem
     cv2.circle(tela, (cx, cy), raio, cor, espessura)
-
     # Dentes radiais
     for i in range(dentes):
         ang = 2 * math.pi * i / dentes
@@ -22,27 +18,20 @@ def desenhar_engrenagem(tela, centro, raio=15, dentes=10,
         x_out = int(cx + (raio + 5) * math.cos(ang))
         y_out = int(cy + (raio + 5) * math.sin(ang))
         cv2.line(tela, (x_in, y_in), (x_out, y_out), cor, 3)
-
     # Furo central
     cv2.circle(tela, (cx, cy), max(3, raio // 4), cor, -1)
 
-
 def desenhar_garra(tela, ponto, angulo, comprimento=28):
-    """Desenha uma garra de duas pontas na última junta."""
     x, y = ponto
-
     # A garra acompanha a orientação do último elo.
     ux = math.cos(angulo)
     uy = -math.sin(angulo)
-
     # Vetor perpendicular para separar as duas pontas.
     px = -uy
     py = ux
-
     # Base da garra ligeiramente à frente da junta.
     base_x = x + int(ux * 7)
     base_y = y + int(uy * 7)
-
     # Pontos de abertura das duas garras.
     abertura = 9
     ponta1 = (
@@ -53,10 +42,8 @@ def desenhar_garra(tela, ponto, angulo, comprimento=28):
         int(base_x + ux * comprimento - px * abertura),
         int(base_y + uy * comprimento - py * abertura)
     )
-
     cv2.line(tela, (x, y), ponta1, (0, 200, 255), 5)
     cv2.line(tela, (x, y), ponta2, (0, 200, 255), 5)
-
     # Pequenos segmentos voltados para dentro, dando aparência de garra.
     curva = 8
     ponta1_final = (
@@ -67,7 +54,6 @@ def desenhar_garra(tela, ponto, angulo, comprimento=28):
         int(ponta2[0] - ux * curva - px * 4),
         int(ponta2[1] - uy * curva - py * 4)
     )
-
     cv2.line(tela, ponta1, ponta1_final, (0, 200, 255), 4)
     cv2.line(tela, ponta2, ponta2_final, (0, 200, 255), 4)
 
@@ -112,14 +98,11 @@ def braco_mecanico(x, y, ang_ombro, ang_cotovelo):
     # Junta da base
     desenhar_engrenagem(tela, (base_x, base_y), raio=15)
     cv2.circle(tela,(base_x, base_y),8,(0, 0, 255),-1)
-
     # Junta do cotovelo
     desenhar_engrenagem(tela, (x1, y1), raio=15)
     cv2.circle(tela,(x1, y1),8,(0, 0, 255),-1)
-
     # Última junta / ponta do braço
     cv2.circle(tela,(x2, y2),8,(0, 255, 255),-1)
-
     # GARRA NA ÚLTIMA JUNTA
     desenhar_garra(tela, (x2, y2), angulo_total)
     texto1 = f"Angulo ombro: {ang_ombro} graus"
