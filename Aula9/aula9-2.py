@@ -1,0 +1,72 @@
+import numpy as np
+import matplotlib.pyplot as plt
+def transformacao_escala():
+    print("=== Escala 2D ===\n")
+    # Definição da Coordenadas Homogêneas
+    # Vértices: A(-2,-2), B(0,3), C(2,-1) e A(-2,-2) para fechar o polígono.
+    matriz_vertices = np.array([
+        [-2,0,2,-2], # Linha do Eixo X
+        [-2,3,-2,-2], # Linha do Eixo Y
+        [1,1,1,1]  # Linha do Eixo W
+    ])
+    print("Matriz de Vértices Original (SRO):")
+    print(matriz_vertices, "\n")
+    # Matriz de Transformação (Escala)
+    # A ideia é dobrar o tamanho dos eixos X e Y
+    sx = 2
+    sy = 2
+    matriz_escala = np.array([
+        [sx,0,0],
+        [0,sy,0],
+        [0,0,1]
+    ])
+    print(f"Matriz de Escala (Sx={sx}, Sy={sy})")
+    print(matriz_escala,"\n")
+    # Multiplicação Matricial
+    matriz_transformada = matriz_escala @ matriz_vertices
+    print("Matriz de Vértices Escaladas (SRU):")
+    print(matriz_transformada,"\n")
+
+    # Renderização
+    fig, ax = plt.subplots(figsize=(10,10))
+    x_orig = matriz_vertices[0,:]
+    y_orig = matriz_vertices[1,:]
+    x_trans = matriz_transformada[0,:]
+    y_trans = matriz_transformada[1,:]
+    # Triângulo original(Azul, tracejado)
+    ax.plot(x_orig,y_orig,color='blue',linestyle='--',
+            linewidth=2,marker='o',label='Original')
+    # Triângulo Transladado (Vermelho, sólido)
+    ax.plot(x_trans,y_trans,color='red',linestyle='-',
+                linewidth=2,marker='s',label='Escalonado')
+    ax.fill(x_trans,y_trans,color='red',alpha=0.3)
+    ax.fill(x_orig,y_orig,color='blue',alpha=0.1)
+    rotulos = ['A','B','C']
+    for i in range(3):
+        # original
+        ax.annotate(f"{rotulos[i]} {x_orig[i]:.0f},{y_orig[i]:.0f}",(x_orig[i],y_orig[i]),textcoords="offset points", xytext=(-35,-5), color='blue')
+        # transladado
+        ax.annotate(f"{rotulos[i]}' {x_trans[i]:.0f},{y_trans[i]:.0f}",(x_trans[i],y_trans[i]),textcoords="offset points", xytext=(10,5), color='darkred')
+    # Desenhando uma linha pontilhada da Origem (0,0)
+    for i in range(3):
+        ax.plot([0, x_trans[i]],[0,y_trans[i]],color='gray',linestyle=':',alpha=0.5)
+    # Plano Cartesiano (Grade, Eixos, Limites)
+    ax.set_title("Transformação Escala", fontsize=14, fontweight='bold')
+    ax.set_xlabel("Eixo X", fontsize=12)
+    ax.set_ylabel("Eixo Y", fontsize=12)
+    # Limites da janela de visualização (Viewport)
+    ax.set_xlim(-6,6)
+    ax.set_ylim(-6,8)
+    # Desenhando os eixos X=0 e Y=0 em negrito
+    ax.axhline(0, color='black', linewidth=2)
+    ax.axvline(0, color='black', linewidth=2)
+    # Configurando a grade
+    ax.set_xticks(np.arange(-6,7,1))
+    ax.set_yticks(np.arange(-6,9,1))
+    ax.grid(True, linestyle=':', color='gray', alpha=0.7)
+    ax.legend(loc='upper left', fontsize=12)
+    print("[*] Renderizando o plano cartesiano...")
+    plt.show()
+
+if __name__ == "__main__":
+    transformacao_escala()
